@@ -391,43 +391,36 @@ namespace kakao
                 // control colors
                 if (timerStage != 0)
                 {
-                    try
+                    // time difference
+                    double currentDifference = 1;
+
+                    // best
+                    if (comboBox_TIMER_compareAgainst == "0")
                     {
-                        // time difference
-                        double currentDifference = 1;
-
-                        // best
-                        if (comboBox_TIMER_compareAgainst == "0")
-                        {
-                            if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
-                            else currentDifference = 0;
-                        }
-
-
-                        // average
-                        else if (comboBox_TIMER_compareAgainst == "1" || comboBox_TIMER_compareAgainst == "")
-                        {
-                            if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
-                            else currentDifference = 0;
-                        }
-
-                        // ahead
-                        if (currentDifference <= 0 || label_timer.Text == "00:00.000")
-                        {
-                            if (button_TIMER_timeAheadColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeAheadColor);
-                            else label_timer.ForeColor = Color.LimeGreen; // default setting
-                        }
-
-                        // behind
-                        else
-                        {
-                            if (button_TIMER_timeBehindColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeBehindColor);
-                            else label_timer.ForeColor = Color.Red; // default setting
-                        }
+                        if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
+                        else currentDifference = 0;
                     }
-                    catch (Exception ex)
+
+
+                    // average
+                    else if (comboBox_TIMER_compareAgainst == "1" || comboBox_TIMER_compareAgainst == "")
                     {
-                        MessageBox.Show(ex.ToString());
+                        if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
+                        else currentDifference = 0;
+                    }
+
+                    // ahead
+                    if (currentDifference <= 0 || label_timer.Text == "00:00.000")
+                    {
+                        if (button_TIMER_timeAheadColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeAheadColor);
+                        else label_timer.ForeColor = Color.LimeGreen; // default setting
+                    }
+
+                    // behind
+                    else
+                    {
+                        if (button_TIMER_timeBehindColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeBehindColor);
+                        else label_timer.ForeColor = Color.Red; // default setting
                     }
                 }
 
