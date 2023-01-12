@@ -1609,8 +1609,8 @@ namespace kakao
                         if (currentlyLoading == 0 && comboBox_selectLevel.SelectedIndex >= 0)
                         {
                             // disable saves (stars, gold, progress)
-                            byte[] instruction = { 0xEB, 0x1A };
-                            toolkit.WriteMemory(moduleAddress + 0xB5374, instruction);
+                            byte[] instruction = { 0x90, 0x90, 0x90 };
+                            toolkit.WriteMemory(moduleAddress + 0xB4FF3, instruction);
 
                             // adjust selected level index
                             playedLevel = comboBox_selectLevel.SelectedIndex;
