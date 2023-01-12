@@ -397,7 +397,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 479);
+            this.ClientSize = new System.Drawing.Size(328, 479);
             this.Controls.Add(this.rrcrxo);
             this.Controls.Add(this.checkBox_LEVELS_includePelicanDialogueSkip);
             this.Controls.Add(this.label_includePelicanDialogueSkip);
