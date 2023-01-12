@@ -14,4 +14,4 @@ You can select levels, change levels, remove best times, change average of last.
 # Settings
 Multiple options to make the timer fit all your needs.
 
-![image](https://user-images.githubusercontent.com/118167137/212000363-c4fcb793-7ec0-4481-a70d-0af332c73e9f.png)
+![image](https://user-images.githubusercontent.com/118167137/212001514-660ef1d9-1f4b-47ff-bd1f-0c17e1977bd7.png)
