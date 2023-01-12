@@ -7,11 +7,11 @@ Starts and stops automatically, has a feature to load levels, fully compatible w
 ![image](https://user-images.githubusercontent.com/118167137/209756925-788281b5-c79d-409b-bb48-458121186709.png)
 
 # Main
-You can select levels, change levels, remove best times, change average of last.
+You can select levels, change levels, remove best times, change average of last.z
 
-![image](https://user-images.githubusercontent.com/118167137/209756994-6ca95244-bb2c-47b6-9561-abe0decfcabc.png)
+![image](https://user-images.githubusercontent.com/118167137/212000266-9af58574-0c3f-4dc2-8c17-c4e315aaccb5.png)
 
 # Settings
 Multiple options to make the timer fit all your needs.
 
-![image](https://user-images.githubusercontent.com/118167137/209757076-0496f2a0-5ffd-4f1c-8855-4362532f3f91.png)
+![image](https://user-images.githubusercontent.com/118167137/212000363-c4fcb793-7ec0-4481-a70d-0af332c73e9f.png)
