@@ -63,6 +63,8 @@
             this.label_backColor = new System.Windows.Forms.Label();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.rrcrxo = new System.Windows.Forms.Label();
+            this.label_livesplitCompatibility = new System.Windows.Forms.Label();
+            this.checkBox_LEVELS_livesplitCompatibility = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBox_LEVELS_includePelicanDialogueSkip
@@ -110,7 +112,7 @@
             // 
             // button_resetToDefault
             // 
-            this.button_resetToDefault.Location = new System.Drawing.Point(8, 448);
+            this.button_resetToDefault.Location = new System.Drawing.Point(8, 471);
             this.button_resetToDefault.Name = "button_resetToDefault";
             this.button_resetToDefault.Size = new System.Drawing.Size(305, 23);
             this.button_resetToDefault.TabIndex = 62;
@@ -121,7 +123,7 @@
             // label1
             // 
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(-78, 439);
+            this.label1.Location = new System.Drawing.Point(-78, 462);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(500, 2);
             this.label1.TabIndex = 61;
@@ -129,7 +131,7 @@
             // checkBox_WINDOW_topMost
             // 
             this.checkBox_WINDOW_topMost.AutoSize = true;
-            this.checkBox_WINDOW_topMost.Location = new System.Drawing.Point(298, 409);
+            this.checkBox_WINDOW_topMost.Location = new System.Drawing.Point(298, 432);
             this.checkBox_WINDOW_topMost.Name = "checkBox_WINDOW_topMost";
             this.checkBox_WINDOW_topMost.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_topMost.TabIndex = 60;
@@ -139,7 +141,7 @@
             // label_topMost
             // 
             this.label_topMost.AutoSize = true;
-            this.label_topMost.Location = new System.Drawing.Point(18, 409);
+            this.label_topMost.Location = new System.Drawing.Point(18, 432);
             this.label_topMost.Name = "label_topMost";
             this.label_topMost.Size = new System.Drawing.Size(47, 13);
             this.label_topMost.TabIndex = 59;
@@ -148,7 +150,7 @@
             // button_WINDOW_formFontColor
             // 
             this.button_WINDOW_formFontColor.BackColor = System.Drawing.Color.White;
-            this.button_WINDOW_formFontColor.Location = new System.Drawing.Point(292, 337);
+            this.button_WINDOW_formFontColor.Location = new System.Drawing.Point(292, 360);
             this.button_WINDOW_formFontColor.Name = "button_WINDOW_formFontColor";
             this.button_WINDOW_formFontColor.Size = new System.Drawing.Size(23, 17);
             this.button_WINDOW_formFontColor.TabIndex = 58;
@@ -158,7 +160,7 @@
             // label_formFontColor
             // 
             this.label_formFontColor.AutoSize = true;
-            this.label_formFontColor.Location = new System.Drawing.Point(17, 340);
+            this.label_formFontColor.Location = new System.Drawing.Point(17, 363);
             this.label_formFontColor.Name = "label_formFontColor";
             this.label_formFontColor.Size = new System.Drawing.Size(74, 13);
             this.label_formFontColor.TabIndex = 57;
@@ -169,7 +171,7 @@
             this.checkBox_WINDOW_showBorder.AutoSize = true;
             this.checkBox_WINDOW_showBorder.Checked = true;
             this.checkBox_WINDOW_showBorder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_WINDOW_showBorder.Location = new System.Drawing.Point(298, 386);
+            this.checkBox_WINDOW_showBorder.Location = new System.Drawing.Point(298, 409);
             this.checkBox_WINDOW_showBorder.Name = "checkBox_WINDOW_showBorder";
             this.checkBox_WINDOW_showBorder.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_showBorder.TabIndex = 56;
@@ -179,7 +181,7 @@
             // label_showBorder
             // 
             this.label_showBorder.AutoSize = true;
-            this.label_showBorder.Location = new System.Drawing.Point(18, 386);
+            this.label_showBorder.Location = new System.Drawing.Point(18, 409);
             this.label_showBorder.Name = "label_showBorder";
             this.label_showBorder.Size = new System.Drawing.Size(65, 13);
             this.label_showBorder.TabIndex = 55;
@@ -188,7 +190,7 @@
             // checkBox_WINDOW_showTimerOnly
             // 
             this.checkBox_WINDOW_showTimerOnly.AutoSize = true;
-            this.checkBox_WINDOW_showTimerOnly.Location = new System.Drawing.Point(298, 363);
+            this.checkBox_WINDOW_showTimerOnly.Location = new System.Drawing.Point(298, 386);
             this.checkBox_WINDOW_showTimerOnly.Name = "checkBox_WINDOW_showTimerOnly";
             this.checkBox_WINDOW_showTimerOnly.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_showTimerOnly.TabIndex = 54;
@@ -198,7 +200,7 @@
             // label_showTimerOnly
             // 
             this.label_showTimerOnly.AutoSize = true;
-            this.label_showTimerOnly.Location = new System.Drawing.Point(18, 363);
+            this.label_showTimerOnly.Location = new System.Drawing.Point(18, 386);
             this.label_showTimerOnly.Name = "label_showTimerOnly";
             this.label_showTimerOnly.Size = new System.Drawing.Size(79, 13);
             this.label_showTimerOnly.TabIndex = 53;
@@ -207,7 +209,7 @@
             // button_gamepad
             // 
             this.button_gamepad.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_gamepad.Location = new System.Drawing.Point(214, 235);
+            this.button_gamepad.Location = new System.Drawing.Point(214, 258);
             this.button_gamepad.Name = "button_gamepad";
             this.button_gamepad.Size = new System.Drawing.Size(23, 16);
             this.button_gamepad.TabIndex = 52;
@@ -218,7 +220,7 @@
             // button_WINDOW_formBackColor
             // 
             this.button_WINDOW_formBackColor.BackColor = System.Drawing.Color.Black;
-            this.button_WINDOW_formBackColor.Location = new System.Drawing.Point(293, 315);
+            this.button_WINDOW_formBackColor.Location = new System.Drawing.Point(293, 338);
             this.button_WINDOW_formBackColor.Name = "button_WINDOW_formBackColor";
             this.button_WINDOW_formBackColor.Size = new System.Drawing.Size(23, 17);
             this.button_WINDOW_formBackColor.TabIndex = 51;
@@ -228,7 +230,7 @@
             // label_formBackColor
             // 
             this.label_formBackColor.AutoSize = true;
-            this.label_formBackColor.Location = new System.Drawing.Point(18, 317);
+            this.label_formBackColor.Location = new System.Drawing.Point(18, 340);
             this.label_formBackColor.Name = "label_formBackColor";
             this.label_formBackColor.Size = new System.Drawing.Size(80, 13);
             this.label_formBackColor.TabIndex = 50;
@@ -239,7 +241,7 @@
             this.label_titleProgram.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.label_titleProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_titleProgram.ForeColor = System.Drawing.Color.White;
-            this.label_titleProgram.Location = new System.Drawing.Point(18, 280);
+            this.label_titleProgram.Location = new System.Drawing.Point(18, 303);
             this.label_titleProgram.Name = "label_titleProgram";
             this.label_titleProgram.Size = new System.Drawing.Size(298, 23);
             this.label_titleProgram.TabIndex = 49;
@@ -249,7 +251,7 @@
             // phpcmi
             // 
             this.phpcmi.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.phpcmi.Location = new System.Drawing.Point(-86, 268);
+            this.phpcmi.Location = new System.Drawing.Point(-86, 291);
             this.phpcmi.Name = "phpcmi";
             this.phpcmi.Size = new System.Drawing.Size(500, 2);
             this.phpcmi.TabIndex = 48;
@@ -278,7 +280,7 @@
             // textBox_LEVELS_loadLevelHotkey
             // 
             this.textBox_LEVELS_loadLevelHotkey.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-            this.textBox_LEVELS_loadLevelHotkey.Location = new System.Drawing.Point(241, 235);
+            this.textBox_LEVELS_loadLevelHotkey.Location = new System.Drawing.Point(241, 258);
             this.textBox_LEVELS_loadLevelHotkey.Multiline = true;
             this.textBox_LEVELS_loadLevelHotkey.Name = "textBox_LEVELS_loadLevelHotkey";
             this.textBox_LEVELS_loadLevelHotkey.ReadOnly = true;
@@ -290,7 +292,7 @@
             // label_loadLevelHotkey
             // 
             this.label_loadLevelHotkey.AutoSize = true;
-            this.label_loadLevelHotkey.Location = new System.Drawing.Point(18, 238);
+            this.label_loadLevelHotkey.Location = new System.Drawing.Point(18, 261);
             this.label_loadLevelHotkey.Name = "label_loadLevelHotkey";
             this.label_loadLevelHotkey.Size = new System.Drawing.Size(87, 13);
             this.label_loadLevelHotkey.TabIndex = 44;
@@ -393,11 +395,34 @@
             this.rrcrxo.Size = new System.Drawing.Size(0, 13);
             this.rrcrxo.TabIndex = 67;
             // 
+            // label_livesplitCompatibility
+            // 
+            this.label_livesplitCompatibility.AutoSize = true;
+            this.label_livesplitCompatibility.Location = new System.Drawing.Point(18, 238);
+            this.label_livesplitCompatibility.Name = "label_livesplitCompatibility";
+            this.label_livesplitCompatibility.Size = new System.Drawing.Size(101, 13);
+            this.label_livesplitCompatibility.TabIndex = 68;
+            this.label_livesplitCompatibility.Text = "livesplit compatibility";
+            // 
+            // checkBox_LEVELS_livesplitCompatibility
+            // 
+            this.checkBox_LEVELS_livesplitCompatibility.AutoSize = true;
+            this.checkBox_LEVELS_livesplitCompatibility.Checked = true;
+            this.checkBox_LEVELS_livesplitCompatibility.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_LEVELS_livesplitCompatibility.Location = new System.Drawing.Point(298, 238);
+            this.checkBox_LEVELS_livesplitCompatibility.Name = "checkBox_LEVELS_livesplitCompatibility";
+            this.checkBox_LEVELS_livesplitCompatibility.Size = new System.Drawing.Size(15, 14);
+            this.checkBox_LEVELS_livesplitCompatibility.TabIndex = 69;
+            this.checkBox_LEVELS_livesplitCompatibility.UseVisualStyleBackColor = true;
+            this.checkBox_LEVELS_livesplitCompatibility.CheckedChanged += new System.EventHandler(this.CheckboxClick);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 479);
+            this.ClientSize = new System.Drawing.Size(328, 499);
+            this.Controls.Add(this.checkBox_LEVELS_livesplitCompatibility);
+            this.Controls.Add(this.label_livesplitCompatibility);
             this.Controls.Add(this.rrcrxo);
             this.Controls.Add(this.checkBox_LEVELS_includePelicanDialogueSkip);
             this.Controls.Add(this.label_includePelicanDialogueSkip);
@@ -478,5 +503,7 @@
         private System.Windows.Forms.Label label_backColor;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Label rrcrxo;
+        private System.Windows.Forms.Label label_livesplitCompatibility;
+        private System.Windows.Forms.CheckBox checkBox_LEVELS_livesplitCompatibility;
     }
 }

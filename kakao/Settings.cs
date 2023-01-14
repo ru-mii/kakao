@@ -138,6 +138,10 @@ namespace kakao
             if (levels3 != "") checkBox_LEVELS_includePelicanDialogueSkip.Checked = bool.Parse(levels3);
             else checkBox_LEVELS_includePelicanDialogueSkip.Checked = true;
 
+            string levels4 = Saves.Read("settings", "checkBox_LEVELS_livesplitCompatibility");
+            if (levels4 != "") checkBox_LEVELS_livesplitCompatibility.Checked = bool.Parse(levels4);
+            else checkBox_LEVELS_livesplitCompatibility.Checked = true;
+
             // ---------------------- WINDOW
 
             // button_WINDOW_formBackColor
