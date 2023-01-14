@@ -19,7 +19,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "1" + "\n";
+        public static string softwareVersion = "3" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -956,6 +956,8 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
+                        SetStats(0, 50);
+
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -977,7 +979,6 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
-                            SetStats(0, 50);
                             progressAddress = moduleAddress + 0x734CC8;
                             toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(2f));
                             UnlockOneLevel(12);
@@ -1036,6 +1037,8 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
+                        SetStats(0, 50);
+
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         
@@ -1057,7 +1060,6 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
-                            SetStats(0, 50);
                             progressAddress = moduleAddress + 0x734CC8;
                             toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(5f));
                             UnlockOneLevel(13);
@@ -1189,6 +1191,8 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
+                        SetStats(0, 50);
+
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -1342,6 +1346,8 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
+                        SetStats(3000, 50);
+
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -1372,7 +1378,6 @@ namespace kakao
 
 
                             UnlockOneLevel(20);
-                            SetStats(3000, 50);
 
                             loadingAddress = moduleAddress + 0x73B7F4;
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
