@@ -1,6 +1,5 @@
 # kakao
 
-[![CodeFactor](https://www.codefactor.io/repository/github/ru-mii/kakao/badge)](https://www.codefactor.io/repository/github/ru-mii/kakao)  
 Timer for individual Kao The Kangaroo Round 2 levels.  
 
 Starts and stops automatically, has a feature to load levels, fully compatible with LiveSplit autosplitter for Kao 2, meaning you can compare your segments from splits with the times from this timer as it starts/stops in the same way at the same time.
