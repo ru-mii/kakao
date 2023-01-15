@@ -47,6 +47,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button_settings = new System.Windows.Forms.Button();
             this.button_loadSettings = new System.Windows.Forms.Button();
+            this.checkForUpdatesThread = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_averageBy)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -220,6 +221,10 @@
             this.button_loadSettings.UseVisualStyleBackColor = true;
             this.button_loadSettings.Click += new System.EventHandler(this.button_loadSettings_Click);
             // 
+            // checkForUpdatesThread
+            // 
+            this.checkForUpdatesThread.DoWork += new System.ComponentModel.DoWorkEventHandler(this.checkForUpdatesThread_DoWork);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -269,6 +274,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.Button button_loadSettings;
+        private System.ComponentModel.BackgroundWorker checkForUpdatesThread;
     }
 }
 

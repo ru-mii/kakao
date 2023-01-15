@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using XInput.Wrapper;
 
 namespace kakao
 {
@@ -19,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "3" + "\n";
+        public static string softwareVersion = "4" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -102,9 +101,6 @@ namespace kakao
             // by using global variable that's used for update cheks
             Text = "kakao v" + softwareVersion;
 
-            // check for new updates
-            Updates.CheckForUpdates();
-
             // load settings
             LoadSettings();
 
@@ -133,6 +129,7 @@ namespace kakao
             backgroundThread.RunWorkerAsync();
             pressedStateThread.RunWorkerAsync();
             buttonStateThread.RunWorkerAsync();
+            checkForUpdatesThread.RunWorkerAsync();
         }
 
         // gets best time from selected level
@@ -167,6 +164,10 @@ namespace kakao
             // if none above got through return empty text
             return "";
         }
+
+        // check for new updates
+        private void checkForUpdatesThread_DoWork(object sender, DoWorkEventArgs e)
+        { Updates.CheckForUpdates(); }
 
         // gets average time from selected level
         private string GetAverageTime()
