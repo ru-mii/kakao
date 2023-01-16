@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "5" + "\n";
+        public static string softwareVersion = "6" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -139,7 +139,7 @@ namespace kakao
             string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
 
             // file path, holds all the times
-            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "." + globalSuffix + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "_BEST" + globalSuffix + "." + Saves.extension);
 
             // check if level file times exists
             if (File.Exists(filePath))
@@ -176,7 +176,7 @@ namespace kakao
             string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
 
             // file path, holds all the times
-            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "_AVERAGE." + globalSuffix + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "_AVERAGE" + globalSuffix + Saves.extension);
 
             // total times
             int total = 0;
@@ -224,7 +224,7 @@ namespace kakao
         {
             // file path, holds all the times
             string level = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-            string filePath = Path.Combine(Saves.savesPath, "times", level + globalSuffix + "." + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + "." + Saves.extension);
 
             // check if times file exists
             if (File.Exists(filePath))
@@ -282,7 +282,7 @@ namespace kakao
                 Directory.CreateDirectory(Path.Combine(Saves.savesPath, "times"));
 
             // file path, holds all the times
-            string filePath = Path.Combine(Saves.savesPath, "times", level + globalSuffix + "." + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + "." + Saves.extension);
 
             // convert time to visual representation
             string timeShowcase = TimeSpan.FromMilliseconds(time).ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
@@ -327,7 +327,7 @@ namespace kakao
             // ########### AVERAGE
 
             // change file path to average
-            filePath = Path.Combine(Saves.savesPath, "times", level + "_AVERAGE." + globalSuffix + Saves.extension);
+            filePath = Path.Combine(Saves.savesPath, "times", level + "_AVERAGE" + globalSuffix + Saves.extension);
 
             // if total times exceed 100, remove oldest one
             /*if (File.Exists(filePath))
