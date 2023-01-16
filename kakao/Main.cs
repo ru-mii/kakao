@@ -453,6 +453,7 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
                         {
+                            SetStats(0, 0);
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                             timerStage = 4;
                         }
@@ -481,7 +482,6 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(3));
@@ -492,6 +492,7 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
+                                SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
 
@@ -518,7 +519,6 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
                             timerStage = 2;
@@ -537,6 +537,7 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
                             {
+                                SetStats(0, 0);
                                 loadingAddress = moduleAddress + 0x73B7F4;
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
@@ -653,9 +654,9 @@ namespace kakao
                 // river raid
                 else if (playedLevel == 6)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
+                        SetStats(0, 0);
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(6));
                         timerStage = 2;
@@ -690,7 +691,6 @@ namespace kakao
                 // shaman's cave
                 else if (playedLevel == 7)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
@@ -702,6 +702,7 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
+                            SetStats(0, 0);
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                             timerStage = 3;
                         }
@@ -726,7 +727,6 @@ namespace kakao
                 // igloo village
                 else if (playedLevel == 8)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
                         loadingAddress = moduleAddress + 0x73B7F4;
@@ -768,6 +768,7 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
+                            SetStats(0, 0);
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                             timerStage = 4;
                         }
@@ -808,9 +809,9 @@ namespace kakao
                 // ice cave
                 else if (playedLevel == 9)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
+                        SetStats(0, 0);
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(9));
                         timerStage = 2;
@@ -845,9 +846,9 @@ namespace kakao
                 // down the mountain
                 else if (playedLevel == 10)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
+                        SetStats(0, 0);
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(10));
                         timerStage = 2;
@@ -882,9 +883,9 @@ namespace kakao
                 // crystal mines
                 else if (playedLevel == 11)
                 {
-                    SetStats(0, 0);
                     if (timerStage == 1)
                     {
+                        SetStats(0, 0);
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(11));
                         timerStage = 2;
@@ -919,9 +920,9 @@ namespace kakao
                 // the station
                 else if (playedLevel == 12)
                 {
-                    SetStats(0, 50);
                     if (timerStage == 1)
                     {
+                        SetStats(0, 50);
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(12));
                         timerStage = 2;
@@ -957,8 +958,6 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
-                        SetStats(0, 50);
-
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -996,6 +995,7 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
+                            SetStats(0, 50);
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                             timerStage = 4;
                         }
@@ -1038,8 +1038,6 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
-                        SetStats(0, 50);
-
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         
@@ -1077,6 +1075,7 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
+                            SetStats(0, 50);
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                             timerStage = 4;
                         }
@@ -1215,7 +1214,6 @@ namespace kakao
                     {
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
-                            SetStats(0, 50);
                             progressAddress = moduleAddress + 0x734CC8;
                             toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(3f));
                             UnlockOneLevel(16);
@@ -1230,6 +1228,7 @@ namespace kakao
 
                     else if (timerStage == 3)
                     {
+                        SetStats(0, 50);
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -1347,8 +1346,6 @@ namespace kakao
                 {
                     if (timerStage == 1)
                     {
-                        SetStats(3000, 50);
-
                         loadingAddress = moduleAddress + 0x73B7F4;
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -1390,6 +1387,7 @@ namespace kakao
 
                     else if (timerStage == 3)
                     {
+                        SetStats(3000, 50);
                         if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                         {
                             startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
