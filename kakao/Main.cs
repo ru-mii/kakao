@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "6" + "\n";
+        public static string softwareVersion = "7" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -1311,6 +1311,9 @@ namespace kakao
                     if (timerStage == 1)
                     {
                         SetStats(0, 50);
+                        progressAddress = moduleAddress + 0x734CC8;
+                        UnlockOneLevel(1);
+                        toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
                         loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                         toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(19));
                         timerStage = 2;
