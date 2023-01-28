@@ -456,6 +456,7 @@
             this.Controls.Add(this.sioyui);
             this.Controls.Add(this.label_timeAheadColor);
             this.Controls.Add(this.label_backColor);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Settings";
