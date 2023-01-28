@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "9" + "\n";
+        public static string softwareVersion = "10" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -382,146 +382,64 @@ namespace kakao
         // runs in the background
         private void backgroundThread_DoWork(object sender, DoWorkEventArgs e)
         {
-            long startTime = 0;
-            long currentTime = 0;
-            TimeSpan difference = new TimeSpan();
-
-            uint progressAddress = 0;
-            uint loadingAddress = 0;
-            uint loaderAddress = 0;
-            uint successAddress = 0;
-            uint cutsceneAddress = 0;
-
-            long startLoadingTime = 0;
-
-            while (true)
+            try
             {
-                // control colors
-                if (timerStage != 0)
+                long startTime = 0;
+                long currentTime = 0;
+                TimeSpan difference = new TimeSpan();
+
+                uint progressAddress = 0;
+                uint loadingAddress = 0;
+                uint loaderAddress = 0;
+                uint successAddress = 0;
+                uint cutsceneAddress = 0;
+
+                long startLoadingTime = 0;
+
+                while (true)
                 {
-                    // time difference
-                    double currentDifference = 1;
-
-                    // best
-                    if (comboBox_TIMER_compareAgainst == "0")
+                    // control colors
+                    if (timerStage != 0)
                     {
-                        if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
-                        else currentDifference = 0;
-                    }
+                        // time difference
+                        double currentDifference = 1;
 
-
-                    // average
-                    else if (comboBox_TIMER_compareAgainst == "1" || comboBox_TIMER_compareAgainst == "")
-                    {
-                        if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
-                        else currentDifference = 0;
-                    }
-
-                    // ahead
-                    if (currentDifference <= 0 || label_timer.Text == "00:00.000")
-                    {
-                        if (button_TIMER_timeAheadColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeAheadColor);
-                        else label_timer.ForeColor = Color.LimeGreen; // default setting
-                    }
-
-                    // behind
-                    else
-                    {
-                        if (button_TIMER_timeBehindColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeBehindColor);
-                        else label_timer.ForeColor = Color.Red; // default setting
-                    }
-                }
-
-                // the ship
-                if (playedLevel == 1)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                        // best
+                        if (comboBox_TIMER_compareAgainst == "0")
                         {
-                            cutsceneAddress = moduleAddress + 0x751680;
-                            timerStage = 3;
+                            if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
+                            else currentDifference = 0;
+                        }
+
+
+                        // average
+                        else if (comboBox_TIMER_compareAgainst == "1" || comboBox_TIMER_compareAgainst == "")
+                        {
+                            if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
+                            else currentDifference = 0;
+                        }
+
+                        // ahead
+                        if (currentDifference <= 0 || label_timer.Text == "00:00.000")
+                        {
+                            if (button_TIMER_timeAheadColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeAheadColor);
+                            else label_timer.ForeColor = Color.LimeGreen; // default setting
+                        }
+
+                        // behind
+                        else
+                        {
+                            if (button_TIMER_timeBehindColor != "") label_timer.ForeColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_timeBehindColor);
+                            else label_timer.ForeColor = Color.Red; // default setting
                         }
                     }
 
-                    else if (timerStage == 3)
+                    // the ship
+                    if (playedLevel == 1)
                     {
-                        if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
+                        if (timerStage == 1)
                         {
                             SetStats(0, 0);
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 4)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 8)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // beavers' forest
-                else if (playedLevel == 3)
-                {
-                    if (checkBox_LEVELS_includeTheShipInBeaversForest == "False" || checkBox_LEVELS_livesplitCompatibility == "True")
-                    {
-                        if (timerStage == 1)
-                        {
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(3));
-                            timerStage = 2;
-                        }
-
-                        else if (timerStage == 2)
-                        {
-                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                            {
-                                SetStats(0, 0);
-                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                                successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-
-                                timerStage = 3;
-                            }
-                        }
-
-                        else if (timerStage == 3)
-                        {
-                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                            {
-                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
-                                playedLevel = 0;
-                                timerStage = 0;
-                            }
-                        }
-                    }
-                    else // TRUE
-                    {
-                        if (timerStage == 1)
-                        {
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
                             timerStage = 2;
@@ -541,7 +459,660 @@ namespace kakao
                             if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
                             {
                                 SetStats(0, 0);
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+                        }
+
+                        else if (timerStage == 4)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 8)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // beavers' forest
+                    else if (playedLevel == 3)
+                    {
+                        if (checkBox_LEVELS_includeTheShipInBeaversForest == "False" || checkBox_LEVELS_livesplitCompatibility == "True")
+                        {
+                            if (timerStage == 1)
+                            {
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(3));
+                                timerStage = 2;
+                            }
+
+                            else if (timerStage == 2)
+                            {
+                                if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                                {
+                                    SetStats(0, 0);
+                                    startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                    successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+
+                                    timerStage = 3;
+                                }
+                            }
+
+                            else if (timerStage == 3)
+                            {
+                                currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                                label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                                if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                                {
+                                    string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                    SubmitNewTime(currentLevel, currentTime - startTime);
+                                    playedLevel = 0;
+                                    timerStage = 0;
+                                }
+                            }
+                        }
+                        else // TRUE
+                        {
+                            if (timerStage == 1)
+                            {
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+
+                            else if (timerStage == 2)
+                            {
+                                if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                                {
+                                    cutsceneAddress = moduleAddress + 0x751680;
+                                    timerStage = 3;
+                                }
+                            }
+
+                            else if (timerStage == 3)
+                            {
+                                if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
+                                {
+                                    SetStats(0, 0);
+                                    loadingAddress = moduleAddress + 0x73B7F4;
+                                    startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                    timerStage = 4;
+                                }
+                            }
+
+                            else if (timerStage == 4)
+                            {
+                                if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                                {
+                                    startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                    timerStage = 5;
+                                }
+
+                                successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                                currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                                label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                                if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                                {
+                                    string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                    SubmitNewTime(currentLevel, currentTime - startTime);
+                                    playedLevel = 0;
+                                    timerStage = 0;
+                                }
+                            }
+
+                            else if (timerStage == 5)
+                            {
+                                if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                                {
+                                    startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                    timerStage = 4;
+                                }
+                            }
+                        }
+                    }
+
+                    // the great escape
+                    else if (playedLevel == 4)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(4));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // great trees
+                    else if (playedLevel == 5)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(5));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // river raid
+                    else if (playedLevel == 6)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(6));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // shaman's cave
+                    else if (playedLevel == 7)
+                    {
+                        if (timerStage == 1)
+                        {
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(7));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                SetStats(0, 0);
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // igloo village
+                    else if (playedLevel == 8)
+                    {
+                        if (timerStage == 1)
+                        {
+                            isLoaded = false;
+                            SetStats(0, 0);
+                            loadingAddress = moduleAddress + 0x73B7F4;
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+
+                            if (checkBox_LEVELS_livesplitCompatibility == "True")
+                            {
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+                            else
+                            {
                                 loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(8));
+
+                                timerStage = 6;
+                            }
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                progressAddress = moduleAddress + 0x734CC8;
+                                toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
+                                UnlockOneLevel(7);
+
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
+
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                SetStats(0, 0);
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+                        }
+
+                        else if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 5;
+                            }
+
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 5)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                timerStage = 4;
+                            }
+                        }
+
+                        else if (timerStage == 6)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                timerStage = 7;
+                            }
+
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            if (isLoaded) label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 7)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                isLoaded = true;
+                                timerStage = 6;
+                            }
+                        }
+                    }
+
+                    // ice cave
+                    else if (playedLevel == 9)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(9));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // down the mountain
+                    else if (playedLevel == 10)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(10));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // crystal mines
+                    else if (playedLevel == 11)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 0);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(11));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // the station
+                    else if (playedLevel == 12)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 50);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(12));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // the race
+                    else if (playedLevel == 13)
+                    {
+                        if (timerStage == 1)
+                        {
+                            loadingAddress = moduleAddress + 0x73B7F4;
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+
+                            if (checkBox_LEVELS_livesplitCompatibility == "True")
+                            {
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+                            else
+                            {
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(13));
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                progressAddress = moduleAddress + 0x734CC8;
+                                toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(2f));
+                                UnlockOneLevel(12);
+
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
+
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                SetStats(0, 50);
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+                        }
+
+                        else if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 5;
+                            }
+
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x29C;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 5)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                timerStage = 4;
+                            }
+                        }
+                    }
+
+                    // hostile reef
+                    else if (playedLevel == 14)
+                    {
+                        if (timerStage == 1)
+                        {
+                            loadingAddress = moduleAddress + 0x73B7F4;
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+
+                            if (checkBox_LEVELS_livesplitCompatibility == "True")
+                            {
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+                            else
+                            {
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(14));
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                progressAddress = moduleAddress + 0x734CC8;
+                                toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(5f));
+                                UnlockOneLevel(13);
+
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
+
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                SetStats(0, 50);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
                             }
@@ -578,984 +1149,418 @@ namespace kakao
                             }
                         }
                     }
-                }
 
-                // the great escape
-                else if (playedLevel == 4)
-                {
-                    if (timerStage == 1)
+                    // deep ocean
+                    else if (playedLevel == 15)
                     {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(4));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // great trees
-                else if (playedLevel == 5)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(5));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // river raid
-                else if (playedLevel == 6)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(6));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // shaman's cave
-                else if (playedLevel == 7)
-                {
-                    if (timerStage == 1)
-                    {
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(7));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            SetStats(0, 0);
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // igloo village
-                else if (playedLevel == 8)
-                {
-                    if (timerStage == 1)
-                    {
-                        isLoaded = false;
-                        SetStats(0, 0);
-                        loadingAddress = moduleAddress + 0x73B7F4;
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                        if (checkBox_LEVELS_livesplitCompatibility == "True")
-                        {
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
-                            timerStage = 2;
-                        }
-                        else
-                        {
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(8));
-
-                            timerStage = 6;
-                        }
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            progressAddress = moduleAddress + 0x734CC8;
-                            toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
-                            UnlockOneLevel(7);
-
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
-
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            SetStats(0, 0);
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 4)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
-                        {
-                            startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 5;
-                        }
-
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-
-                    else if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 6)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
-                        {
-                            timerStage = 7;
-                        }
-
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        if (isLoaded) label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-
-                    else if (timerStage == 7)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            isLoaded = true;
-                            timerStage = 6;
-                        }
-                    }
-                }
-
-                // ice cave
-                else if (playedLevel == 9)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(9));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // down the mountain
-                else if (playedLevel == 10)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(10));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // crystal mines
-                else if (playedLevel == 11)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 0);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(11));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // the station
-                else if (playedLevel == 12)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(12));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // the race
-                else if (playedLevel == 13)
-                {
-                    if (timerStage == 1)
-                    {
-                        loadingAddress = moduleAddress + 0x73B7F4;
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                        if (checkBox_LEVELS_livesplitCompatibility == "True")
-                        {
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
-                            timerStage = 2;
-                        }
-                        else
-                        {
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(13));
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            progressAddress = moduleAddress + 0x734CC8;
-                            toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(2f));
-                            UnlockOneLevel(12);
-
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
-
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                        if (timerStage == 1)
                         {
                             SetStats(0, 50);
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 4)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
-                        {
-                            startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 5;
-                        }
-
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x29C;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-
-                    else if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
-                            timerStage = 4;
-                        }
-                    }
-                }
-
-                // hostile reef
-                else if (playedLevel == 14)
-                {
-                    if (timerStage == 1)
-                    {
-                        loadingAddress = moduleAddress + 0x73B7F4;
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                        if (checkBox_LEVELS_livesplitCompatibility == "True")
-                        {
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(15));
                             timerStage = 2;
                         }
-                        else
+
+                        else if (timerStage == 2)
                         {
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(14));
-                            timerStage = 3;
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
                         }
                     }
 
-                    else if (timerStage == 2)
+                    // lair of poison
+                    else if (playedLevel == 16)
                     {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            progressAddress = moduleAddress + 0x734CC8;
-                            toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(5f));
-                            UnlockOneLevel(13);
-
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
-
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                        if (timerStage == 1)
                         {
                             SetStats(0, 50);
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 4)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
-                        {
-                            startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 5;
-                        }
-
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-
-                    else if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
-                            timerStage = 4;
-                        }
-                    }
-                }
-
-                // deep ocean
-                else if (playedLevel == 15)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(15));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // lair of poison
-                else if (playedLevel == 16)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(16));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // trip to island
-                else if (playedLevel == 17)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-
-                        loadingAddress = moduleAddress + 0x73B7F4;
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                        if (checkBox_LEVELS_livesplitCompatibility == "True")
-                        {
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(16));
                             timerStage = 2;
                         }
-                        else
+
+                        else if (timerStage == 2)
                         {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // trip to island
+                    else if (playedLevel == 17)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 50);
+
                             loadingAddress = moduleAddress + 0x73B7F4;
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(17));
-                            timerStage = 3;
-                        }
-                    }
 
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            progressAddress = moduleAddress + 0x734CC8;
-                            toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(3f));
-                            UnlockOneLevel(16);
-
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
-
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        SetStats(0, 50);
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
-                        }
-                    }
-
-                    else if (timerStage == 4)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
-                        {
-                            startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 5;
+                            if (checkBox_LEVELS_livesplitCompatibility == "True")
+                            {
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+                            else
+                            {
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(17));
+                                timerStage = 3;
+                            }
                         }
 
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                        else if (timerStage == 2)
                         {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-
-                    else if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
-                            timerStage = 4;
-                        }
-                    }
-                }
-
-                // treasure island
-                else if (playedLevel == 18)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(18));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // the volcano
-                else if (playedLevel == 19)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        progressAddress = moduleAddress + 0x734CC8;
-                        UnlockOneLevel(1);
-                        toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(19));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // abandoned town
-                else if (playedLevel == 21)
-                {
-                    if (timerStage == 1)
-                    {
-                        loadingAddress = moduleAddress + 0x73B7F4;
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-
-                        if (checkBox_LEVELS_livesplitCompatibility == "True")
-                        {
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
-                            timerStage = 2;
-                        }
-                        else
-                        {
-                            loadingAddress = moduleAddress + 0x73B7F4;
-                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(21));
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            progressAddress = moduleAddress + 0x734CC8;
-
-                            if (checkBox_LEVELS_includePelicanDialogueSkip == "True" || checkBox_LEVELS_includePelicanDialogueSkip == "") // default setting
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                progressAddress = moduleAddress + 0x734CC8;
                                 toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(3f));
+                                UnlockOneLevel(16);
 
-                            else toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(-3f));
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
 
+                                timerStage = 3;
+                            }
+                        }
 
-                            UnlockOneLevel(20);
+                        else if (timerStage == 3)
+                        {
+                            SetStats(0, 50);
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+                        }
 
+                        else if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 5;
+                            }
+
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 5)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                timerStage = 4;
+                            }
+                        }
+                    }
+
+                    // treasure island
+                    else if (playedLevel == 18)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 50);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(18));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // the volcano
+                    else if (playedLevel == 19)
+                    {
+                        if (timerStage == 1)
+                        {
+                            SetStats(0, 50);
+                            progressAddress = moduleAddress + 0x734CC8;
+                            UnlockOneLevel(1);
+                            toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(19));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+                    }
+
+                    // abandoned town
+                    else if (playedLevel == 21)
+                    {
+                        if (timerStage == 1)
+                        {
                             loadingAddress = moduleAddress + 0x73B7F4;
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
 
-                            timerStage = 3;
+                            if (checkBox_LEVELS_livesplitCompatibility == "True")
+                            {
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
+                                timerStage = 2;
+                            }
+                            else
+                            {
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(21));
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                progressAddress = moduleAddress + 0x734CC8;
+
+                                if (checkBox_LEVELS_includePelicanDialogueSkip == "True" || checkBox_LEVELS_includePelicanDialogueSkip == "") // default setting
+                                    toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(3f));
+
+                                else toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(-3f));
+
+
+                                UnlockOneLevel(20);
+
+                                loadingAddress = moduleAddress + 0x73B7F4;
+                                loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                                toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(2));
+
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            SetStats(3000, 50);
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+                        }
+
+                        else if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 5;
+                            }
+
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 5)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                timerStage = 4;
+                            }
                         }
                     }
 
-                    else if (timerStage == 3)
+                    // hunter's galleon
+                    else if (playedLevel == 22)
                     {
-                        SetStats(3000, 50);
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                        if (timerStage == 1)
                         {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 4;
+                            SetStats(0, 50);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(22));
+                            timerStage = 2;
+                        }
+
+                        else if (timerStage == 2)
+                        {
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        else if (timerStage == 3)
+                        {
+                            successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
                         }
                     }
 
-                    else if (timerStage == 4)
+                    // final duel
+                    else if (playedLevel == 23)
                     {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                        if (timerStage == 1)
                         {
-                            startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 5;
+                            SetStats(0, 50);
+                            loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
+                            toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(23));
+                            timerStage = 2;
                         }
 
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
+                        else if (timerStage == 2)
                         {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
+                            if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
+                            {
+                                cutsceneAddress = moduleAddress + 0x751680;
+                                startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 3;
+                            }
+                        }
+
+                        if (timerStage > 2)
+                        {
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+                        }
+
+                        if (timerStage == 3)
+                        {
+                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
+                                timerStage = 4;
+                        }
+
+                        if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 0)
+                                timerStage = 5;
+                        }
+
+                        if (timerStage == 5)
+                        {
+                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1 && difference.TotalSeconds > 10)
+                            {
+                                string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
+                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                playedLevel = 0;
+                                timerStage = 0;
+                            }
                         }
                     }
 
-                    else if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
-                        {
-                            startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
-                            timerStage = 4;
-                        }
-                    }
+                    Thread.Sleep(1);
                 }
-
-                // hunter's galleon
-                else if (playedLevel == 22)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(22));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    else if (timerStage == 3)
-                    {
-                        successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-
-                        if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                // final duel
-                else if (playedLevel == 23)
-                {
-                    if (timerStage == 1)
-                    {
-                        SetStats(0, 50);
-                        loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
-                        toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(23));
-                        timerStage = 2;
-                    }
-
-                    else if (timerStage == 2)
-                    {
-                        if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
-                        {
-                            cutsceneAddress = moduleAddress + 0x751680;
-                            startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            timerStage = 3;
-                        }
-                    }
-
-                    if (timerStage > 2)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                        label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-                    }
-
-                    if (timerStage == 3)
-                    {
-                        if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
-                            timerStage = 4;
-                    }
-
-                    if (timerStage == 4)
-                    {
-                        if (toolkit.ReadMemoryInt32(cutsceneAddress) == 0)
-                            timerStage = 5;
-                    }
-
-                    if (timerStage == 5)
-                    {
-                        if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1 && difference.TotalSeconds > 10)
-                        {
-                            string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                            SubmitNewTime(currentLevel, currentTime - startTime);
-                            playedLevel = 0;
-                            timerStage = 0;
-                        }
-                    }
-                }
-
-                Thread.Sleep(1);
             }
+            catch (Exception ex) { Saves.Save("logs", "error_log.txt", ex.ToString()); }
+
         }
 
         // check for hotkey presses
