@@ -122,6 +122,11 @@ namespace kakao
             if (timer4 != "") comboBox_TIMER_compareAgainst.SelectedIndex = int.Parse(timer4);
             else comboBox_TIMER_compareAgainst.SelectedIndex = 1;
 
+            // checkBox_TIMER_frameBasedSystem
+            string timer5 = Saves.Read("settings", "checkBox_TIMER_frameBasedSystem");
+            if (timer5 != "") checkBox_TIMER_frameBasedSystem.Checked = bool.Parse(timer5);
+            else checkBox_TIMER_frameBasedSystem.Checked = true;
+
             // ---------------------- LEVELS
 
             // checkBox_LEVELS_includeTheShipInBeaversForest

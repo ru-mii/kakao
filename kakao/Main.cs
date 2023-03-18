@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "10" + "\n";
+        public static string softwareVersion = "11" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -26,7 +26,7 @@ namespace kakao
         // settings values
         static string
             button_TIMER_backColor, button_TIMER_timeAheadColor, button_TIMER_timeBehindColor,
-            comboBox_TIMER_compareAgainst,
+            comboBox_TIMER_compareAgainst, checkBox_TIMER_frameBasedSystem,
 
             checkBox_LEVELS_includeTheShipInBeaversForest, textBox_LEVELS_loadLevelHotkey,
             textBox_LEVELS_loadLevelHotkeyValue, checkBox_LEVELS_includePelicanDialogueSkip,
@@ -36,6 +36,9 @@ namespace kakao
             checkBox_WINDOW_showBorder, checkBox_WINDOW_topMost,
 
             numericAverage, selectLevelIndex;
+
+        // one time extension fix
+        string oneTimeExtensionFix = "";
 
         // global game process
         public static Process mainGameProcess = new Process();
@@ -135,6 +138,46 @@ namespace kakao
             checkForUpdatesThread.RunWorkerAsync();
         }
 
+        private void FixExtension()
+        {
+            string timesPath = Path.Combine(Saves.savesPath, "times");
+            string settingsPath = Path.Combine(Saves.savesPath, "settings");
+            string[] files;
+
+            // fix time files
+            if (Directory.Exists(timesPath))
+            {
+                files = Directory.GetFiles(timesPath);
+
+                foreach (string file in files)
+                {
+                    if (file.Length >= 4)
+                    {
+                        if (file.Substring(file.Length - 4) != ".kka")
+                            File.Move(file, file.Replace("kka", ".kka"));
+                    }
+                }
+            }
+
+            // fix settings files
+            if (Directory.Exists(settingsPath))
+            {
+                files = Directory.GetFiles(settingsPath);
+
+                foreach (string file in files)
+                {
+                    if (file.Length >= 4)
+                    {
+                        if (file.Substring(file.Length - 4) != ".kka")
+                            File.Move(file, file.Replace("kka", ".kka"));
+                    }
+                }
+            }
+
+            // save completion
+            Saves.Save("settings", "oneTimeExtensionFix", "True");
+        }
+
         // gets best time from selected level
         private string GetBestTime()
         {
@@ -142,7 +185,7 @@ namespace kakao
             string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
 
             // file path, holds all the times
-            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "_BEST" + globalSuffix + "." + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", currentLevel + "_BEST" + globalSuffix + Saves.extension);
 
             // check if level file times exists
             if (File.Exists(filePath))
@@ -208,6 +251,10 @@ namespace kakao
                     // assign total times text
                     label_from.Text = "from total: " + total;
 
+                    // change to frame based time
+                    if (checkBox_TIMER_frameBasedSystem != "False")
+                        averageTime = (long)(((int)((averageTime) / 16.66666666666667)) / 60f * 1000);
+
                     // store time in milliseconds
                     storedAverageTimeLong = averageTime;
 
@@ -227,7 +274,7 @@ namespace kakao
         {
             // file path, holds all the times
             string level = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + "." + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + Saves.extension);
 
             // check if times file exists
             if (File.Exists(filePath))
@@ -285,7 +332,7 @@ namespace kakao
                 Directory.CreateDirectory(Path.Combine(Saves.savesPath, "times"));
 
             // file path, holds all the times
-            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + "." + Saves.extension);
+            string filePath = Path.Combine(Saves.savesPath, "times", level + "_BEST" + globalSuffix + Saves.extension);
 
             // convert time to visual representation
             string timeShowcase = TimeSpan.FromMilliseconds(time).ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
@@ -387,6 +434,7 @@ namespace kakao
                 long startTime = 0;
                 long currentTime = 0;
                 TimeSpan difference = new TimeSpan();
+                uint positionAddress = 0;
 
                 uint progressAddress = 0;
                 uint loadingAddress = 0;
@@ -407,16 +455,32 @@ namespace kakao
                         // best
                         if (comboBox_TIMER_compareAgainst == "0")
                         {
-                            if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
-                            else currentDifference = 0;
+                            if (checkBox_TIMER_frameBasedSystem == "False")
+                            {
+                                if (storedBestTime != "") currentDifference = (currentTime - startTime) - storedBestTimeLong;
+                                else currentDifference = 0;
+                            }
+                            else
+                            {
+                                if (storedBestTime != "") currentDifference = ((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000)) - storedBestTimeLong;
+                                else currentDifference = 0;
+                            }
                         }
 
 
                         // average
                         else if (comboBox_TIMER_compareAgainst == "1" || comboBox_TIMER_compareAgainst == "")
                         {
-                            if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
-                            else currentDifference = 0;
+                            if (checkBox_TIMER_frameBasedSystem == "False")
+                            {
+                                if (storedAverageTime != "") currentDifference = (currentTime - startTime) - storedAverageTimeLong;
+                                else currentDifference = 0;
+                            }
+                            else
+                            {
+                                if (storedAverageTime != "") currentDifference = (((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000))) - storedAverageTimeLong;
+                                else currentDifference = 0;
+                            }
                         }
 
                         // ahead
@@ -467,13 +531,16 @@ namespace kakao
                         else if (timerStage == 4)
                         {
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 8)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -508,13 +575,16 @@ namespace kakao
                             else if (timerStage == 3)
                             {
                                 currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                                difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                                if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                                else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                                 label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                                 if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                                 {
                                     string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                    SubmitNewTime(currentLevel, currentTime - startTime);
+                                    SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                     playedLevel = 0;
                                     timerStage = 0;
                                 }
@@ -559,13 +629,16 @@ namespace kakao
 
                                 successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                                 currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                                difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                                if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                                else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                                 label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                                 if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                                 {
                                     string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                    SubmitNewTime(currentLevel, currentTime - startTime);
+                                    SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                     playedLevel = 0;
                                     timerStage = 0;
                                 }
@@ -606,13 +679,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -643,13 +719,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -680,13 +759,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -716,13 +798,16 @@ namespace kakao
                         else if (timerStage == 3)
                         {
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -790,13 +875,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -820,13 +908,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             if (isLoaded) label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -867,13 +958,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -904,13 +998,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -941,13 +1038,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -977,13 +1077,16 @@ namespace kakao
                         else if (timerStage == 3)
                         {
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1048,13 +1151,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x29C;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1128,13 +1234,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1174,13 +1283,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1210,13 +1322,16 @@ namespace kakao
                         else if (timerStage == 3)
                         {
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1283,13 +1398,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1329,13 +1447,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1368,13 +1489,16 @@ namespace kakao
                         else if (timerStage == 3)
                         {
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1445,13 +1569,16 @@ namespace kakao
 
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1491,13 +1618,16 @@ namespace kakao
                         {
                             successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
                             currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
+
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
                             if (toolkit.ReadMemoryFloat(successAddress) == 40f && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1520,36 +1650,27 @@ namespace kakao
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
                                 cutsceneAddress = moduleAddress + 0x751680;
+                                uint gameletPointer = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868);
+                                positionAddress = toolkit.ReadMemoryInt32(gameletPointer + 0x38C) + 0x58;
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 3;
                             }
                         }
 
-                        if (timerStage > 2)
-                        {
-                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                            difference = TimeSpan.FromMilliseconds(currentTime - startTime);
-                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
-                        }
-
                         if (timerStage == 3)
                         {
-                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
-                                timerStage = 4;
-                        }
+                            currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-                        if (timerStage == 4)
-                        {
-                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 0)
-                                timerStage = 5;
-                        }
+                            if (checkBox_TIMER_frameBasedSystem == "False") difference = TimeSpan.FromMilliseconds(currentTime - startTime);
+                            else difference = TimeSpan.FromMilliseconds((long)(((int)((currentTime - startTime) / 16.66666666666667)) / 60f * 1000));
 
-                        if (timerStage == 5)
-                        {
-                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1 && difference.TotalSeconds > 10)
+                            label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
+
+                            if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1 && (int)toolkit.ReadMemoryFloat(positionAddress) == -987 &&
+                            (int)toolkit.ReadMemoryFloat(positionAddress + 0x4) == 13420 && (int)toolkit.ReadMemoryFloat(positionAddress + 0x8) == 476)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
-                                SubmitNewTime(currentLevel, currentTime - startTime);
+                                SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
                             }
@@ -1784,6 +1905,7 @@ namespace kakao
             button_TIMER_timeAheadColor = Saves.Read("settings", "button_TIMER_timeAheadColor");
             button_TIMER_timeBehindColor = Saves.Read("settings", "button_TIMER_timeBehindColor");
             comboBox_TIMER_compareAgainst = Saves.Read("settings", "comboBox_TIMER_compareAgainst");
+            checkBox_TIMER_frameBasedSystem = Saves.Read("settings", "checkBox_TIMER_frameBasedSystem");
             checkBox_LEVELS_includeTheShipInBeaversForest = Saves.Read("settings", "checkBox_LEVELS_includeTheShipInBeaversForest");
             textBox_LEVELS_loadLevelHotkey = Saves.Read("settings", "textBox_LEVELS_loadLevelHotkey");
             textBox_LEVELS_loadLevelHotkeyValue = Saves.Read("settings", "textBox_LEVELS_loadLevelHotkeyValue");
@@ -1796,6 +1918,13 @@ namespace kakao
             checkBox_WINDOW_topMost = Saves.Read("settings", "checkBox_WINDOW_topMost");
             numericAverage = Saves.Read("settings", "numericUpDown_averageBy");
             selectLevelIndex = Saves.Read("settings", "comboBox_selectLevel");
+
+            // one time fix for the extension dot
+            oneTimeExtensionFix = Saves.Read("settings", "oneTimeExtensionFix");
+
+            // one time extension fix
+            if (oneTimeExtensionFix != "True")
+                FixExtension();
 
             // implement read settings
             if (button_TIMER_backColor != "") label_timer.BackColor = (Color)colorConverter.ConvertFromString("#" + button_TIMER_backColor);
