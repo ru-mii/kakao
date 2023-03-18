@@ -435,9 +435,9 @@
             this.label_frameBasedSystem.AutoSize = true;
             this.label_frameBasedSystem.Location = new System.Drawing.Point(15, 137);
             this.label_frameBasedSystem.Name = "label_frameBasedSystem";
-            this.label_frameBasedSystem.Size = new System.Drawing.Size(100, 13);
+            this.label_frameBasedSystem.Size = new System.Drawing.Size(163, 13);
             this.label_frameBasedSystem.TabIndex = 70;
-            this.label_frameBasedSystem.Text = "frame based system";
+            this.label_frameBasedSystem.Text = "frame based system (display only)";
             // 
             // Settings
             // 
