@@ -45,3 +45,4 @@ kakao/obj/Release/TempPE/Properties.Resources.Designer.cs.dll
 *.dll
 packages/XInput.Wrapper.0.3.1/XInput.Wrapper.0.3.1.nupkg
 packages/XInput.Wrapper.0.3.1/.signature.p7s
+.vs/kakao/v16/.suo

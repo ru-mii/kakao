@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "11" + "\n";
+        public static string softwareVersion = "12" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -73,6 +73,10 @@ namespace kakao
 
         //
         bool isLoaded = false;
+
+        // giving 50 stars
+        string temporaryStarsFromLevel = "";
+        int starsFromLevel = 15;
 
         // initializing component, ignore
         public Main() { InitializeComponent(); }
@@ -503,7 +507,9 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 0) SetStats(0, 50);
+                            else SetStats(0, 0);
+
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(1));
                             timerStage = 2;
@@ -522,7 +528,8 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
                             {
-                                SetStats(0, 0);
+                                if (starsFromLevel == 0) SetStats(0, 50);
+                                else SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
                             }
@@ -564,7 +571,8 @@ namespace kakao
                             {
                                 if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                                 {
-                                    SetStats(0, 0);
+                                    if (starsFromLevel == 1) SetStats(0, 50);
+                                    else SetStats(0, 0);
                                     startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                     successAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x734DF8) + 0x1A0;
 
@@ -590,7 +598,7 @@ namespace kakao
                                 }
                             }
                         }
-                        else // TRUE
+                        else
                         {
                             if (timerStage == 1)
                             {
@@ -612,7 +620,8 @@ namespace kakao
                             {
                                 if (toolkit.ReadMemoryInt32(cutsceneAddress) == 1)
                                 {
-                                    SetStats(0, 0);
+                                    if (starsFromLevel == 1) SetStats(0, 50);
+                                    else SetStats(0, 0);
                                     loadingAddress = moduleAddress + 0x73B7F4;
                                     startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                     timerStage = 4;
@@ -660,7 +669,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 2) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(4));
                             timerStage = 2;
@@ -700,7 +710,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 3) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(5));
                             timerStage = 2;
@@ -740,7 +751,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 4) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(6));
                             timerStage = 2;
@@ -789,7 +801,8 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
-                                SetStats(0, 0);
+                                if (starsFromLevel == 5) SetStats(0, 50);
+                                else SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 3;
                             }
@@ -820,7 +833,8 @@ namespace kakao
                         if (timerStage == 1)
                         {
                             isLoaded = false;
-                            SetStats(0, 0);
+                            if (starsFromLevel == 6) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loadingAddress = moduleAddress + 0x73B7F4;
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
 
@@ -859,7 +873,8 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
-                                SetStats(0, 0);
+                                if (starsFromLevel == 6) SetStats(0, 50);
+                                else SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
                             }
@@ -939,7 +954,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 7) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(9));
                             timerStage = 2;
@@ -979,7 +995,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 8) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(10));
                             timerStage = 2;
@@ -1019,7 +1036,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 0);
+                            if (starsFromLevel == 9) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(11));
                             timerStage = 2;
@@ -1059,7 +1077,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 10) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(12));
                             timerStage = 2;
@@ -1135,7 +1154,8 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
-                                SetStats(0, 50);
+                                if (starsFromLevel == 11) SetStats(0, 50);
+                                else SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
                             }
@@ -1218,7 +1238,8 @@ namespace kakao
                         {
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
-                                SetStats(0, 50);
+                                if (starsFromLevel == 12) SetStats(0, 50);
+                                else SetStats(0, 0);
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                                 timerStage = 4;
                             }
@@ -1264,7 +1285,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 13) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(15));
                             timerStage = 2;
@@ -1304,7 +1326,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 14) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(16));
                             timerStage = 2;
@@ -1341,9 +1364,12 @@ namespace kakao
                     // trip to island
                     else if (playedLevel == 17)
                     {
+                        Text = timerStage.ToString();
+
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 15) SetStats(0, 50);
+                            else SetStats(0, 0);
 
                             loadingAddress = moduleAddress + 0x73B7F4;
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
@@ -1380,7 +1406,8 @@ namespace kakao
 
                         else if (timerStage == 3)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 15) SetStats(0, 50);
+                            else SetStats(0, 0);
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -1428,7 +1455,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 16) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(18));
                             timerStage = 2;
@@ -1468,8 +1496,11 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            loadingAddress = moduleAddress + 0x73B7F4;
+                            if (starsFromLevel == 17) SetStats(0, 50);
+                            else SetStats(0, 0);
                             progressAddress = moduleAddress + 0x734CC8;
+                            toolkit.WriteMemory(moduleAddress + 0x734CE0, BitConverter.GetBytes(-1f));
                             UnlockOneLevel(1);
                             toolkit.WriteMemory(progressAddress, BitConverter.GetBytes(1f));
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
@@ -1495,12 +1526,27 @@ namespace kakao
 
                             label_timer.Text = difference.ToString("mm':'ss'.'fff", CultureInfo.InvariantCulture);
 
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 1)
+                            {
+                                startLoadingTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                                timerStage = 4;
+                            }
+
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 2 && difference.TotalSeconds > 10)
                             {
                                 string currentLevel = comboBox_selectLevel.GetItemText(comboBox_selectLevel.SelectedItem).ToLower();
                                 SubmitNewTime(currentLevel, (long)difference.TotalMilliseconds);
                                 playedLevel = 0;
                                 timerStage = 0;
+                            }
+                        }
+
+                        else if (timerStage == 4)
+                        {
+                            if (toolkit.ReadMemoryInt32(loadingAddress) == 0)
+                            {
+                                startTime += DateTimeOffset.Now.ToUnixTimeMilliseconds() - startLoadingTime;
+                                timerStage = 3;
                             }
                         }
                     }
@@ -1551,7 +1597,8 @@ namespace kakao
 
                         else if (timerStage == 3)
                         {
-                            SetStats(3000, 50);
+                            if (starsFromLevel == 18) SetStats(3000, 50);
+                            else SetStats(3000, 0);
                             if (toolkit.ReadMemoryInt32(loaderAddress) == 0)
                             {
                                 startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -1599,7 +1646,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 19) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(22));
                             timerStage = 2;
@@ -1639,7 +1687,8 @@ namespace kakao
                     {
                         if (timerStage == 1)
                         {
-                            SetStats(0, 50);
+                            if (starsFromLevel == 20) SetStats(0, 50);
+                            else SetStats(0, 0);
                             loaderAddress = toolkit.ReadMemoryInt32(moduleAddress + 0x73D868) + 0x3754;
                             toolkit.WriteMemory(loaderAddress, BitConverter.GetBytes(23));
                             timerStage = 2;
@@ -1918,6 +1967,7 @@ namespace kakao
             checkBox_WINDOW_topMost = Saves.Read("settings", "checkBox_WINDOW_topMost");
             numericAverage = Saves.Read("settings", "numericUpDown_averageBy");
             selectLevelIndex = Saves.Read("settings", "comboBox_selectLevel");
+            temporaryStarsFromLevel = Saves.Read("settings", "comboBox_LEVELS_starsFromLevel");
 
             // one time fix for the extension dot
             oneTimeExtensionFix = Saves.Read("settings", "oneTimeExtensionFix");
@@ -1959,6 +2009,9 @@ namespace kakao
             if (checkBox_LEVELS_livesplitCompatibility == "") checkBox_LEVELS_livesplitCompatibility = "True";
             if (checkBox_LEVELS_livesplitCompatibility == "True") globalSuffix = "";
             else globalSuffix = "_NOCOM";
+
+            if (temporaryStarsFromLevel == "") starsFromLevel = 15;
+            else starsFromLevel = int.Parse(temporaryStarsFromLevel);
 
             // reload times
             storedBestTime = GetBestTime();

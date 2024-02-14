@@ -64,6 +64,9 @@ namespace kakao
 
             // save settings
             Saves.Save("settings", changedDropdown.Name, changedDropdown.SelectedIndex.ToString());
+
+            // reload settings to program
+            LoadSettingsToMain();
         }
 
         // when checkbox is clicked
@@ -146,6 +149,10 @@ namespace kakao
             string levels4 = Saves.Read("settings", "checkBox_LEVELS_livesplitCompatibility");
             if (levels4 != "") checkBox_LEVELS_livesplitCompatibility.Checked = bool.Parse(levels4);
             else checkBox_LEVELS_livesplitCompatibility.Checked = true;
+
+            string levels5 = Saves.Read("settings", "comboBox_LEVELS_starsFromLevel");
+            if (levels5 != "") comboBox_LEVELS_starsFromLevel.SelectedIndex = int.Parse(levels5);
+            else comboBox_LEVELS_starsFromLevel.SelectedIndex = 15;
 
             // ---------------------- WINDOW
 

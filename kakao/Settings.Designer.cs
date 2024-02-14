@@ -67,6 +67,8 @@
             this.checkBox_LEVELS_livesplitCompatibility = new System.Windows.Forms.CheckBox();
             this.checkBox_TIMER_frameBasedSystem = new System.Windows.Forms.CheckBox();
             this.label_frameBasedSystem = new System.Windows.Forms.Label();
+            this.comboBox_LEVELS_starsFromLevel = new System.Windows.Forms.ComboBox();
+            this.label_starsFromLevel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkBox_LEVELS_includePelicanDialogueSkip
@@ -114,7 +116,7 @@
             // 
             // button_resetToDefault
             // 
-            this.button_resetToDefault.Location = new System.Drawing.Point(8, 494);
+            this.button_resetToDefault.Location = new System.Drawing.Point(8, 517);
             this.button_resetToDefault.Name = "button_resetToDefault";
             this.button_resetToDefault.Size = new System.Drawing.Size(305, 23);
             this.button_resetToDefault.TabIndex = 62;
@@ -125,7 +127,7 @@
             // label1
             // 
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(-78, 485);
+            this.label1.Location = new System.Drawing.Point(-78, 508);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(500, 2);
             this.label1.TabIndex = 61;
@@ -133,7 +135,7 @@
             // checkBox_WINDOW_topMost
             // 
             this.checkBox_WINDOW_topMost.AutoSize = true;
-            this.checkBox_WINDOW_topMost.Location = new System.Drawing.Point(298, 455);
+            this.checkBox_WINDOW_topMost.Location = new System.Drawing.Point(298, 478);
             this.checkBox_WINDOW_topMost.Name = "checkBox_WINDOW_topMost";
             this.checkBox_WINDOW_topMost.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_topMost.TabIndex = 60;
@@ -143,7 +145,7 @@
             // label_topMost
             // 
             this.label_topMost.AutoSize = true;
-            this.label_topMost.Location = new System.Drawing.Point(18, 455);
+            this.label_topMost.Location = new System.Drawing.Point(18, 478);
             this.label_topMost.Name = "label_topMost";
             this.label_topMost.Size = new System.Drawing.Size(47, 13);
             this.label_topMost.TabIndex = 59;
@@ -152,7 +154,7 @@
             // button_WINDOW_formFontColor
             // 
             this.button_WINDOW_formFontColor.BackColor = System.Drawing.Color.White;
-            this.button_WINDOW_formFontColor.Location = new System.Drawing.Point(292, 383);
+            this.button_WINDOW_formFontColor.Location = new System.Drawing.Point(292, 406);
             this.button_WINDOW_formFontColor.Name = "button_WINDOW_formFontColor";
             this.button_WINDOW_formFontColor.Size = new System.Drawing.Size(23, 17);
             this.button_WINDOW_formFontColor.TabIndex = 58;
@@ -162,7 +164,7 @@
             // label_formFontColor
             // 
             this.label_formFontColor.AutoSize = true;
-            this.label_formFontColor.Location = new System.Drawing.Point(17, 386);
+            this.label_formFontColor.Location = new System.Drawing.Point(17, 409);
             this.label_formFontColor.Name = "label_formFontColor";
             this.label_formFontColor.Size = new System.Drawing.Size(74, 13);
             this.label_formFontColor.TabIndex = 57;
@@ -173,7 +175,7 @@
             this.checkBox_WINDOW_showBorder.AutoSize = true;
             this.checkBox_WINDOW_showBorder.Checked = true;
             this.checkBox_WINDOW_showBorder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_WINDOW_showBorder.Location = new System.Drawing.Point(298, 432);
+            this.checkBox_WINDOW_showBorder.Location = new System.Drawing.Point(298, 455);
             this.checkBox_WINDOW_showBorder.Name = "checkBox_WINDOW_showBorder";
             this.checkBox_WINDOW_showBorder.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_showBorder.TabIndex = 56;
@@ -183,7 +185,7 @@
             // label_showBorder
             // 
             this.label_showBorder.AutoSize = true;
-            this.label_showBorder.Location = new System.Drawing.Point(18, 432);
+            this.label_showBorder.Location = new System.Drawing.Point(18, 455);
             this.label_showBorder.Name = "label_showBorder";
             this.label_showBorder.Size = new System.Drawing.Size(65, 13);
             this.label_showBorder.TabIndex = 55;
@@ -192,7 +194,7 @@
             // checkBox_WINDOW_showTimerOnly
             // 
             this.checkBox_WINDOW_showTimerOnly.AutoSize = true;
-            this.checkBox_WINDOW_showTimerOnly.Location = new System.Drawing.Point(298, 409);
+            this.checkBox_WINDOW_showTimerOnly.Location = new System.Drawing.Point(298, 432);
             this.checkBox_WINDOW_showTimerOnly.Name = "checkBox_WINDOW_showTimerOnly";
             this.checkBox_WINDOW_showTimerOnly.Size = new System.Drawing.Size(15, 14);
             this.checkBox_WINDOW_showTimerOnly.TabIndex = 54;
@@ -202,7 +204,7 @@
             // label_showTimerOnly
             // 
             this.label_showTimerOnly.AutoSize = true;
-            this.label_showTimerOnly.Location = new System.Drawing.Point(18, 409);
+            this.label_showTimerOnly.Location = new System.Drawing.Point(18, 432);
             this.label_showTimerOnly.Name = "label_showTimerOnly";
             this.label_showTimerOnly.Size = new System.Drawing.Size(79, 13);
             this.label_showTimerOnly.TabIndex = 53;
@@ -222,7 +224,7 @@
             // button_WINDOW_formBackColor
             // 
             this.button_WINDOW_formBackColor.BackColor = System.Drawing.Color.Black;
-            this.button_WINDOW_formBackColor.Location = new System.Drawing.Point(293, 361);
+            this.button_WINDOW_formBackColor.Location = new System.Drawing.Point(293, 384);
             this.button_WINDOW_formBackColor.Name = "button_WINDOW_formBackColor";
             this.button_WINDOW_formBackColor.Size = new System.Drawing.Size(23, 17);
             this.button_WINDOW_formBackColor.TabIndex = 51;
@@ -232,7 +234,7 @@
             // label_formBackColor
             // 
             this.label_formBackColor.AutoSize = true;
-            this.label_formBackColor.Location = new System.Drawing.Point(18, 363);
+            this.label_formBackColor.Location = new System.Drawing.Point(18, 386);
             this.label_formBackColor.Name = "label_formBackColor";
             this.label_formBackColor.Size = new System.Drawing.Size(80, 13);
             this.label_formBackColor.TabIndex = 50;
@@ -243,7 +245,7 @@
             this.label_titleProgram.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.label_titleProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_titleProgram.ForeColor = System.Drawing.Color.White;
-            this.label_titleProgram.Location = new System.Drawing.Point(18, 326);
+            this.label_titleProgram.Location = new System.Drawing.Point(18, 349);
             this.label_titleProgram.Name = "label_titleProgram";
             this.label_titleProgram.Size = new System.Drawing.Size(298, 23);
             this.label_titleProgram.TabIndex = 49;
@@ -253,7 +255,7 @@
             // phpcmi
             // 
             this.phpcmi.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.phpcmi.Location = new System.Drawing.Point(-86, 314);
+            this.phpcmi.Location = new System.Drawing.Point(-86, 337);
             this.phpcmi.Name = "phpcmi";
             this.phpcmi.Size = new System.Drawing.Size(500, 2);
             this.phpcmi.TabIndex = 48;
@@ -439,11 +441,53 @@
             this.label_frameBasedSystem.TabIndex = 70;
             this.label_frameBasedSystem.Text = "frame based system (display only)";
             // 
+            // comboBox_LEVELS_starsFromLevel
+            // 
+            this.comboBox_LEVELS_starsFromLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_LEVELS_starsFromLevel.Items.AddRange(new object[] {
+            "The Ship",
+            "Beavers\' Forest",
+            "The Great Escape",
+            "Great Trees",
+            "River Raid",
+            "Shaman\'s Cave",
+            "Igloo Village",
+            "Ice Cave",
+            "Down The Mountain",
+            "Crystal Mines",
+            "The Station",
+            "The Race",
+            "Hostile Reef",
+            "Deep Ocean",
+            "Lair of Poison",
+            "Trip to Island",
+            "Treasure Island",
+            "The Volcano",
+            "Abandoned Town",
+            "Hunter\'s Galleon",
+            "Final Duel"});
+            this.comboBox_LEVELS_starsFromLevel.Location = new System.Drawing.Point(214, 304);
+            this.comboBox_LEVELS_starsFromLevel.Name = "comboBox_LEVELS_starsFromLevel";
+            this.comboBox_LEVELS_starsFromLevel.Size = new System.Drawing.Size(99, 21);
+            this.comboBox_LEVELS_starsFromLevel.TabIndex = 72;
+            this.comboBox_LEVELS_starsFromLevel.SelectedIndexChanged += new System.EventHandler(this.DropdownChanged);
+            // 
+            // label_starsFromLevel
+            // 
+            this.label_starsFromLevel.AutoSize = true;
+            this.label_starsFromLevel.Location = new System.Drawing.Point(18, 307);
+            this.label_starsFromLevel.Name = "label_starsFromLevel";
+            this.label_starsFromLevel.Size = new System.Drawing.Size(115, 13);
+            this.label_starsFromLevel.TabIndex = 73;
+            this.label_starsFromLevel.Text = "give 50 stars from level";
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 524);
+            this.ClientSize = new System.Drawing.Size(328, 549);
+            this.Controls.Add(this.label_starsFromLevel);
+            this.Controls.Add(this.comboBox_LEVELS_starsFromLevel);
             this.Controls.Add(this.checkBox_TIMER_frameBasedSystem);
             this.Controls.Add(this.label_frameBasedSystem);
             this.Controls.Add(this.checkBox_LEVELS_livesplitCompatibility);
@@ -533,5 +577,7 @@
         private System.Windows.Forms.CheckBox checkBox_LEVELS_livesplitCompatibility;
         private System.Windows.Forms.CheckBox checkBox_TIMER_frameBasedSystem;
         private System.Windows.Forms.Label label_frameBasedSystem;
+        private System.Windows.Forms.ComboBox comboBox_LEVELS_starsFromLevel;
+        private System.Windows.Forms.Label label_starsFromLevel;
     }
 }
