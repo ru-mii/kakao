@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "12" + "\n";
+        public static string softwareVersion = "13" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
@@ -2006,7 +2006,11 @@ namespace kakao
             if (selectLevelIndex != "") comboBox_selectLevel.SelectedIndex = int.Parse(selectLevelIndex);
             else comboBox_selectLevel.SelectedIndex = 0;
 
-            if (checkBox_LEVELS_livesplitCompatibility == "") checkBox_LEVELS_livesplitCompatibility = "True";
+            if (checkBox_LEVELS_livesplitCompatibility == "")
+            {
+                checkBox_LEVELS_livesplitCompatibility = "False";
+                globalSuffix = "_NOCOM";
+            }
             if (checkBox_LEVELS_livesplitCompatibility == "True") globalSuffix = "";
             else globalSuffix = "_NOCOM";
 
