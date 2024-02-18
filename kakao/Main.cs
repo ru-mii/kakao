@@ -18,7 +18,7 @@ namespace kakao
     {
         // build version, adding new line because github adds it to their file
         // and the version is being compared with one written in github file in repo
-        public static string softwareVersion = "13" + "\n";
+        public static string softwareVersion = "14" + "\n";
 
         // initiate forms
         Settings formSettings = new Settings();
