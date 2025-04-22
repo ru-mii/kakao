@@ -148,7 +148,7 @@ namespace kakao
 
             string levels4 = Saves.Read("settings", "checkBox_LEVELS_livesplitCompatibility");
             if (levels4 != "") checkBox_LEVELS_livesplitCompatibility.Checked = bool.Parse(levels4);
-            else checkBox_LEVELS_livesplitCompatibility.Checked = true;
+            else checkBox_LEVELS_livesplitCompatibility.Checked = false;
 
             string levels5 = Saves.Read("settings", "comboBox_LEVELS_starsFromLevel");
             if (levels5 != "") comboBox_LEVELS_starsFromLevel.SelectedIndex = int.Parse(levels5);

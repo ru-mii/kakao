@@ -2006,8 +2006,13 @@ namespace kakao
             if (selectLevelIndex != "") comboBox_selectLevel.SelectedIndex = int.Parse(selectLevelIndex);
             else comboBox_selectLevel.SelectedIndex = 0;
 
-            if (checkBox_LEVELS_livesplitCompatibility == "False") globalSuffix = "_NOCOM";
-            else checkBox_LEVELS_livesplitCompatibility = "True";
+            if (checkBox_LEVELS_livesplitCompatibility == "")
+            {
+                checkBox_LEVELS_livesplitCompatibility = "False";
+                globalSuffix = "_NOCOM";
+            }
+            if (checkBox_LEVELS_livesplitCompatibility == "True") globalSuffix = "";
+            else globalSuffix = "_NOCOM";
 
             if (temporaryStarsFromLevel == "") starsFromLevel = 15;
             else starsFromLevel = int.Parse(temporaryStarsFromLevel);

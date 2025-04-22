@@ -411,8 +411,6 @@
             // checkBox_LEVELS_livesplitCompatibility
             // 
             this.checkBox_LEVELS_livesplitCompatibility.AutoSize = true;
-            this.checkBox_LEVELS_livesplitCompatibility.Checked = true;
-            this.checkBox_LEVELS_livesplitCompatibility.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_LEVELS_livesplitCompatibility.Location = new System.Drawing.Point(298, 261);
             this.checkBox_LEVELS_livesplitCompatibility.Name = "checkBox_LEVELS_livesplitCompatibility";
             this.checkBox_LEVELS_livesplitCompatibility.Size = new System.Drawing.Size(15, 14);
